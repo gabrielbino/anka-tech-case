@@ -1,0 +1,29 @@
+# dependências
+node_modules
+.pnpm
+.yarn
+
+# build e cache
+.next
+out
+dist
+coverage
+
+# arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# arquivos de log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ambiente local
+.env
+.env.*.local
+*.local
+
+# IDEs
+.vscode
+.idea
+*.sw?
