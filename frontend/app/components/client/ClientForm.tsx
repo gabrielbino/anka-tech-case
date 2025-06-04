@@ -5,9 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { clientSchema, ClientFormData } from "@/lib/validators/clientSchema"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
+import { useToast } from "@/lib/hooks/use-toast"
 
 export default function ClientForm() {
   const queryClient = useQueryClient()
+  const { showToast } = useToast()
 
   const {
     register,
@@ -26,6 +28,18 @@ export default function ClientForm() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] })
       reset()
+      showToast({
+        title: "Cliente cadastrado!",
+        description: "O cliente foi adicionado com sucesso.",
+        variant: "success"
+      })
+    },
+    onError: () => {
+      showToast({
+        title: "Erro ao cadastrar",
+        description: "Verifique os campos e tente novamente.",
+        variant: "error"
+      })
     }
   })
 
