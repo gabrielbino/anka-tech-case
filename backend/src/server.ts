@@ -10,8 +10,11 @@ app.register(cors, {
   methods: ["GET", "POST", "PUT", "DELETE"],
 })
 app.register(clientRoutes, { prefix: '/clients' })
-app.register(assetRoutes)
+app.register(assetRoutes, { prefix: '/assets' })
 
-app.listen({ port: 3001 }, () => {
-  console.log('🚀 Servidor rodando em http://localhost:3001')
+app.listen({ port: 3001 }).then(() => {
+  console.log('Servidor rodando em http://localhost:3001')
+}).catch((err) => {
+  console.error('Erro ao iniciar o servidor:', err)
+  process.exit(1)
 })
