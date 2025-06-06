@@ -5,7 +5,8 @@ export const assetSchema = z.object({
   value: z.number({
     required_error: "O valor é obrigatório",
   }).positive("O valor deve ser maior que zero"),
-  category: z.string().min(1, "Categoria é obrigatória")
+  category: z.string().min(1, "Categoria é obrigatória"),
+  clientId: z.number().int().positive()
 })
 
 export type AssetFormData = z.infer<typeof assetSchema>
