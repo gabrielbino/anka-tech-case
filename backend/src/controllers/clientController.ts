@@ -15,6 +15,51 @@ export async function getClients(_: FastifyRequest, reply: FastifyReply) {
   return reply.send(clients)
 }
 
+export async function getClientAssets(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+  const clientId = Number(request.params.id);
+
+  if (isNaN(clientId)) {
+    return reply.status(400).send({ error: 'ID inválido' });
+  }
+
+  try {
+    const assets = await prisma.asset.findMany({
+      where: { clientId },
+    });
+
+    return reply.send(assets);
+  } catch (error) {
+    console.error(error);
+    return reply.status(500).send({ error: 'Erro ao buscar ativos do cliente' });
+  }
+}
+
+export async function getClientById(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  const clientId = Number(request.params.id);
+
+  if (isNaN(clientId)) {
+    return reply.status(400).send({ error: "ID inválido" });
+  }
+
+  try {
+    const client = await prisma.client.findUnique({
+      where: { id: clientId },
+    });
+
+    if (!client) {
+      return reply.status(404).send({ error: "Cliente não encontrado" });
+    }
+
+    return reply.send(client);
+  } catch (error) {
+    console.error("Erro ao buscar cliente:", error);
+    return reply.status(500).send({ error: "Erro interno no servidor" });
+  }
+}
+
 export async function updateClient(request: FastifyRequest, reply: FastifyReply) {
   const { id } = request.params as { id: string }
   const parsed = updateClientSchema.safeParse(request.body)
