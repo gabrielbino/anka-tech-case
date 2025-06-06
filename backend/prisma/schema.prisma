@@ -12,6 +12,7 @@ model Client {
   name    String
   email   String  @unique
   status  Boolean
+  assets  Asset[]
 }
 
 model Asset {
@@ -19,4 +20,6 @@ model Asset {
   name     String
   category String
   value    Float
+  clientId Int
+  client   Client   @relation(fields: [clientId], references: [id])
 }
