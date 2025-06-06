@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import prisma from '@/lib/prisma'
-import { createClientSchema, updateClientSchema } from '@/schemas/clientSchema'
+import prisma from '../lib/prisma'
+import { createClientSchema, updateClientSchema } from '../schemas/clientSchema'
 
 export async function createClient(request: FastifyRequest, reply: FastifyReply) {
   const parsed = createClientSchema.safeParse(request.body)
@@ -26,4 +26,23 @@ export async function updateClient(request: FastifyRequest, reply: FastifyReply)
   })
 
   return reply.send(client)
+}
+
+export async function deleteClient(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  const { id } = request.params
+
+  try {
+    await prisma.client.delete({
+      where: { id: Number(id) }
+    })
+
+    return reply.status(204).send()
+  } catch (error) {
+    return reply.status(404).send({
+      message: "Cliente não encontrado ou já removido"
+    })
+  }
 }

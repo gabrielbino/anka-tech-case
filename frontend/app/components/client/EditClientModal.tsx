@@ -1,6 +1,6 @@
 "use client"
 
-import { Dialog } from "@headlessui/react"
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { clientSchema, ClientFormData } from "@/lib/validators/clientSchema"
@@ -50,6 +50,7 @@ export default function EditClientModal({ isOpen, onClose, client }: EditClientM
 
   const mutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
+      if (!client) throw new Error("Cliente inválido.")
       const response = await axios.put(`http://localhost:3001/clients/${client?.id}`, data)
       return response.data
     },
@@ -72,6 +73,8 @@ export default function EditClientModal({ isOpen, onClose, client }: EditClientM
   })
 
   function onSubmit(data: ClientFormData) {
+    console.log("Enviando dados:", data)
+    if (!client) return
     mutation.mutate(data)
   }
 
@@ -79,8 +82,8 @@ export default function EditClientModal({ isOpen, onClose, client }: EditClientM
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="bg-white p-6 rounded shadow-md max-w-md w-full">
-          <Dialog.Title className="text-lg font-semibold mb-4">Editar Cliente</Dialog.Title>
+        <DialogPanel className="bg-white p-6 rounded shadow-md max-w-md w-full">
+          <DialogTitle className="text-lg font-semibold mb-4">Editar Cliente</DialogTitle>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label>Nome</label>
@@ -114,7 +117,7 @@ export default function EditClientModal({ isOpen, onClose, client }: EditClientM
               </button>
             </div>
           </form>
-        </Dialog.Panel>
+        </DialogPanel>
       </div>
     </Dialog>
   )

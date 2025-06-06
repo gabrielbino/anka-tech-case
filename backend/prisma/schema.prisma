@@ -13,3 +13,10 @@ model Client {
   email   String  @unique
   status  Boolean
 }
+
+model Asset {
+  id       Int     @id @default(autoincrement())
+  name     String
+  category String
+  value    Float
+}

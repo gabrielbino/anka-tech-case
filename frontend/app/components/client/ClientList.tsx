@@ -5,6 +5,7 @@ import EditClientModal from "./EditClientModal"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useToast } from "@/lib/hooks/use-toast"
+import ConfirmDeleteModal from "./ConfirmDeleteModal" 
 
 interface Client {
   id: number
@@ -16,6 +17,9 @@ interface Client {
 export default function ClientList() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false)
+  const [clientToDelete, setClientToDelete] = useState<Client | null>(null)
 
   const queryClient = useQueryClient()
   const { showToast } = useToast()
@@ -49,6 +53,12 @@ export default function ClientList() {
     }
   })
 
+  function confirmDelete(clientId: number) {
+    if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
+      deleteMutation.mutate(clientId)
+    }
+  }
+
   function openEditModal(client: Client) {
     setSelectedClient(client)
     setIsModalOpen(true)
@@ -78,12 +88,15 @@ export default function ClientList() {
             <div className="flex gap-2 mt-4 sm:mt-0">
               <button
                 onClick={() => openEditModal(client)}
-                className="text-sm text-blue-600 underline"
+                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 mr-2"
               >
                 Editar
               </button>
               <button
-                onClick={() => deleteMutation.mutate(client.id)}
+                onClick={() => {
+                  setClientToDelete(client)
+                  setIsConfirmOpen(true)
+                }}
                 className="bg-red-600 text-white px-4 py-1 rounded hover:bg-red-700"
               >
                 Excluir
@@ -97,11 +110,27 @@ export default function ClientList() {
 
       {isModalOpen && selectedClient && (
         <EditClientModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
           client={selectedClient}
-          isOpen={isModalOpen}
-          onClose={closeModal}
         />
       )}
+
+      <ConfirmDeleteModal
+        isOpen={isConfirmOpen}
+        onClose={() => {
+          setIsConfirmOpen(false)
+          setClientToDelete(null)
+        }}
+        onConfirm={() => {
+          if (clientToDelete) {
+            deleteMutation.mutate(clientToDelete.id)
+            setIsConfirmOpen(false)
+            setClientToDelete(null)
+          }
+        }}
+        clientName={clientToDelete?.name || ""}
+      />
     </div>
   )
 }

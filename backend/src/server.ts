@@ -1,12 +1,14 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { clientRoutes } from './routes/clientRoutes'
-import { assetRoutes } from './routes/assets'
-import { PrismaClient } from '@prisma/client'
+import { assetRoutes } from './routes/assetRoutes'
 
 const app = Fastify()
 
-app.register(cors)
+app.register(cors, {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+})
 app.register(clientRoutes, { prefix: '/clients' })
 app.register(assetRoutes)
 
