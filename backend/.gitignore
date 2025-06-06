@@ -13,6 +13,11 @@ dist/
 prisma/dev.db
 prisma/*.sqlite
 prisma/migrations/
+node_modules/
+.prisma/
+backend/node_modules/.prisma/
+/backend/node_modules/.prisma/client/
+/backend/node_modules/@prisma/engines/
 
 # Docker
 *.local
