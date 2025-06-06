@@ -17,3 +17,11 @@ export async function getAssets(_: FastifyRequest, reply: FastifyReply) {
   const assets = await prisma.asset.findMany()
   return reply.send(assets)
 }
+
+export async function getStaticAssets(_: FastifyRequest, reply: FastifyReply) {
+  const staticAssets = [
+    { id: 1, name: "Ação XYZ", category: "Ações", value: 123.45 },
+    { id: 2, name: "Fundo ABC", category: "Fundos", value: 456.78 }
+  ]
+  return reply.send(staticAssets)
+}

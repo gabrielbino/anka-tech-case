@@ -1,7 +1,7 @@
-import { FastifyInstance } from "fastify"
-import { createAsset, getAssets } from "../controllers/assetController"
+  import { FastifyInstance } from "fastify"
+  import { createAsset, getStaticAssets } from "../controllers/assetController"
 
-export async function assetRoutes(app: FastifyInstance) {
-  app.get("/", getAssets)
-  app.post("/", createAsset)
-}
+  export async function assetRoutes(app: FastifyInstance) {
+    app.get("/", getStaticAssets)
+    app.post("/", createAsset)
+  }
