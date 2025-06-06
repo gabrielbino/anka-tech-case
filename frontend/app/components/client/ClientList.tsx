@@ -6,6 +6,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { useToast } from "@/lib/hooks/use-toast"
 import ConfirmDeleteModal from "./ConfirmDeleteModal" 
+import { useRouter } from "next/navigation"
 
 interface Client {
   id: number
@@ -17,6 +18,7 @@ interface Client {
 export default function ClientList() {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const router = useRouter()
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false)
   const [clientToDelete, setClientToDelete] = useState<Client | null>(null)
@@ -53,12 +55,6 @@ export default function ClientList() {
     }
   })
 
-  function confirmDelete(clientId: number) {
-    if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-      deleteMutation.mutate(clientId)
-    }
-  }
-
   function openEditModal(client: Client) {
     setSelectedClient(client)
     setIsModalOpen(true)
@@ -78,17 +74,22 @@ export default function ClientList() {
         data.map(client => (
           <div
             key={client.id}
-            className="border p-4 rounded shadow-sm flex justify-between items-start flex-col sm:flex-row sm:items-center"
+            className="border p-4 rounded shadow-sm hover:shadow-md transition-shadow cursor-pointer flex justify-between items-start flex-col sm:flex-row sm:items-center"
+            onClick={() => router.push(`/clients/${client.id}`)}
           >
-            <div>
-              <p><strong>Nome:</strong> {client.name}</p>
-              <p><strong>E-mail:</strong> {client.email}</p>
-              <p><strong>Status:</strong> {client.status ? "Ativo" : "Inativo"}</p>
+            <div className="w-full">
+              <p className="font-bold">{client.name}</p>
+              <p className="text-sm text-gray-600">E-mail: {client.email}</p>
+              <p className="text-sm text-gray-600">Status: {client.status ? "Ativo" : "Inativo"}</p>
             </div>
-            <div className="flex gap-2 mt-4 sm:mt-0">
+
+            <div
+              className="flex gap-2 mt-4 sm:mt-0"
+              onClick={(e) => e.stopPropagation()}
+            >
               <button
                 onClick={() => openEditModal(client)}
-                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 mr-2"
+                className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700"
               >
                 Editar
               </button>
